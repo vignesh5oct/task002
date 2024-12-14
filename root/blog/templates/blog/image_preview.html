@@ -1,0 +1,97 @@
+{% extends 'blog/base.html' %}
+{% block content %} 
+
+<style>
+img{
+    max-width:180px;
+}
+input[type=file]{
+    padding:10px;
+    background:#2d2d2d;
+}
+</style>
+
+<input type='file' onchange="readURL(this);" />
+<img id="blah" src="http://placehold.it/180" alt="your image" />
+
+<section class="p-5">
+    <h3 class="mb-4">Validation </h3>
+    
+    <div class="input-group mb-3">
+        <input type="file" name="photo" id="photoInput" onchange="checkImage(this)">
+        
+    </div>
+    <img id="blah2" src="http://placehold.it/180" alt="your image" />
+    <p id='err'></p>
+</section>
+<script>
+
+// image_preview 
+  function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+// image_preview with size and dimensions check
+
+    function checkImage(input) {
+        const file = event.target.files[0]
+        const limit = {
+        weight: 700000, // 700kb
+        width: 1024,
+        height: 1024
+        }
+
+        if (file.size > limit.weight) {
+        document.getElementById('err').textContent = 'Size should be lesser';
+        event.target.value = null
+        }
+        else {
+            if(!file.type.match('image.*')) {
+                document.getElementById('err').textContent = 'Upload Image File Only';
+                event.target.value = null
+            }
+            else {
+                let img = new Image()
+                img.src = window.URL.createObjectURL(file)
+
+                img.onload = () => {
+                    console.log('width: ', img.width)
+                    console.log('width: ', img.height)
+
+                    if (img.width >= limit.width && img.height >= limit.height) {
+                        document.getElementById('err').textContent = 'width and height err';
+                        event.target.value = null
+                    }
+                    else {
+                        // upload here
+                        document.getElementById('err').textContent = 'Image Size & Dimensions verified';
+
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                $('#blah2').attr('src', e.target.result);
+                            };
+
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }           
+                }
+            }
+        }   
+    }
+
+
+
+</script>
+
+{% endblock content %} 

@@ -1,0 +1,143 @@
+{% extends 'blog/base.html' %}
+{% block content %} 
+
+
+<form>
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">Username</label>
+        <input type="text" class="form-control" id="validationDefault01">
+    </div>
+    <!-- <div class="col-md-6 mb-3">
+        <label for="validationDefault01">Email</label>
+        <input type="text" class="form-control" id="validationDefault01">
+    </div> -->
+
+    <div class="input-group is-invalid">
+        <div class="custom-file">
+            <label for="validationDefault01">Email</label>
+            <input type="text" class="form-control" id="validationDefault01">
+        </div>
+        <div class="input-group-append">
+           <button id="generateOtp" class="btn btn-outline-secondary" type="button">Send OTP</button>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <!-- <button id="generateOtp" type="button" class="btn btn-primary">Send OTP</button> -->
+        <p id="timer"></p>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">OTP</label>
+        <input id="verifiedOtp" type="number" class="form-control" id="validationDefault01">
+        <p id="verifiedOtpMessage"></p>
+
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <button id="verifyOtp" type="button" class="btn btn-primary">Verify OTP</button>
+    </div>
+      
+    <button class="btn btn-primary" type="submit">Submit form</button>
+</form>
+
+<script>
+    $(document).ready(function(){
+
+        $('#generateOtp').click(function(){
+
+        let timer;
+        let countdown = 30; 
+        let otp_verified =false;
+
+        document.getElementById('generateOtp').disabled = true;
+
+        timer = setInterval(updateTimer, 1000);
+
+        function updateTimer() {
+            const timerElement = document.getElementById('generateOtp');
+            const verifiedOtpElement = document.getElementById('verifyOtp');
+
+            
+            if(otp_verified){
+                
+                document.getElementById('generateOtp').disabled = true;
+                timerElement.textContent = 'otp verified';
+
+                verifiedOtpElement.textContent = `Verified`;
+                document.getElementById('verifyOtp').disabled = true;
+                
+                
+            }
+
+            else if (countdown > 0) {
+                timerElement.textContent = `Resend in ${countdown} seconds`;
+                countdown--;
+            } 
+            else {
+                document.getElementById('generateOtp').disabled = false;
+                timerElement.textContent = 'Resend OTP';
+                countdown = 30;
+                clearInterval(timer);
+            }
+            
+        }
+
+        $.ajax(
+        {
+            url: "/generated-otp/",
+            success: function( response ) {
+                console.log(response.generated_otp);
+
+                $('#verifyOtp').click(function(){
+
+                    let otp = $("#verifiedOtp").val();
+
+                    $.ajax(
+                    {
+                        type:'POST',
+                        url: "/verify-generated-otp/",
+                        data:{
+                            otp:otp,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function( response ) {
+                            console.log(response.otp);
+
+                            if(response.is_otp_valid){
+                                console.log("correct OTP");
+                                console.log("waiting.....",response.otp);
+
+                                if(otp == response.otp){
+                                    otp_verified = true;
+                                }
+
+                            }
+                            else{
+                                otp_verified = false;
+                                const verifiedOtpElement = document.getElementById('verifyOtp');
+                                verifiedOtpElement.textContent = `OTP Not Valid`;
+                                document.getElementById('verifyOtp').disabled = false;
+                            }
+                        }
+                    })
+
+                    });
+            }
+        })
+
+        });
+
+
+        
+
+    })
+
+    
+
+    
+
+    
+</script>
+
+{% endblock content %} 

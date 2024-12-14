@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+{% block content %} 
+
+<a href="{% url 'logout_user' %}">Logout</a>
+
+
+<form>
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">Email</label>
+        <input type="text" class="form-control" id="validationDefault01">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <button id="sendOtp" type="button" class="btn btn-primary">Send OTP</button>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <button id="verifyOtp" type="button" class="btn btn-primary">Verify OTP</button>
+      </div>
+    </div>
+      
+    <button class="btn btn-primary" type="submit">Submit form</button>
+</form>
+
+<script>
+    $('.sendOtp').click(function(){
+        $.ajax(
+        {
+            url: "/likepost",
+            success: function( data ) {
+
+            }
+        })
+    });
+</script>
+{% endblock content %} 
