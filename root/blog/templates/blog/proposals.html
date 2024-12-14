@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+{% block content %} 
+
+
+<hr>
+{% for proposal in proposals %}
+
+  <h1>{{proposal.title}}</h1>
+  <p>{{proposal.proposal}}</p>
+  
+  <form id="voteForm" method="post">
+    {% csrf_token %}
+    {% for choice in choices %}
+      {% if choice.proposal_id == proposal.id %}
+          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_one }}<br>
+          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_two }}<br>
+          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_three }}<br>
+      {% endif %}
+    {% endfor %}
+    <button type="submit"  class="btn btn-primary" id="voteButton">Vote</button>
+  </form>
+  <hr>
+
+{% endfor %}
+
+
+
+{% endblock content %} 

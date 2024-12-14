@@ -12,5 +12,8 @@ urlpatterns = [
 
     path('image-preview/',views.image_preview,name='image_preview'),
 
+    path('add_proposals/',views.add_proposals,name='add_proposals'),
+    path('proposals/',views.proposals,name='proposals'),
+
     
 ]
