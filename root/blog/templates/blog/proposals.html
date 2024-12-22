@@ -3,25 +3,93 @@
 
 
 <hr>
-{% for proposal in proposals %}
+<!-- {% for proposal in proposals %}
 
-  <h1>{{proposal.title}}</h1>
+  <h3>{{proposal.title}}</h3>
   <p>{{proposal.proposal}}</p>
   
-  <form id="voteForm" method="post">
+  <form id="voteForm" method="post" action="/vote-proposals/{{proposal.id}}/">
     {% csrf_token %}
-    {% for choice in choices %}
-      {% if choice.proposal_id == proposal.id %}
-          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_one }}<br>
-          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_two }}<br>
-          <input type="radio" name="vote" value="{{ choice.proposal_id }}"> {{ choice.option_three }}<br>
-      {% endif %}
-    {% endfor %}
+          <input type="radio" name="voted" value="{{ proposal.option_one }}"> {{ proposal.option_one }}<br>
+          <input type="radio" name="voted" value="{{ proposal.option_two }}"> {{ proposal.option_two }}<br>
+          <input type="radio" name="voted" value="{{ proposal.option_three }}"> {{ proposal.option_three }}<br>
     <button type="submit"  class="btn btn-primary" id="voteButton">Vote</button>
   </form>
   <hr>
 
+{% endfor %} -->
+
+{% for proposal in proposals %}
+  <h3>{{proposal.title}}</h3>
+  <p>{{proposal.proposal}}</p>
+  
+  <form id="voteForm" method="post">
+    {% csrf_token %}
+          <input type="radio" name="voted" value="{{ proposal.option_one }}"> {{ proposal.option_one }}<br>
+          <input type="radio" name="voted" value="{{ proposal.option_two }}"> {{ proposal.option_two }}<br>
+          <input type="radio" name="voted" value="{{ proposal.option_three }}"> {{ proposal.option_three }}<br>
+    <button type="submit"  class="btn btn-primary" id="voteButton">Vote</button>
+  </form>
+  <hr>
+
+<h1>Choose an Option</h1>
+  <form id="radio-form" method="post">
+      {% csrf_token %}
+      <label>
+          <input type="radio" name="choice" value="option1"> Option 1
+      </label><br>
+      <label>
+          <input type="radio" name="choice" value="option2"> Option 2
+      </label><br>
+      <label>
+        <input type="radio" name="choice" value="option3"> Option 3
+      </label>
+  </form>
 {% endfor %}
+
+<script>
+
+
+
+
+
+
+// Function to send the selected choice using async/await
+async function sendChoice(choice) {
+  try {
+      const response = await $.ajax({
+          type: "POST",
+          url: "{% url 'update_choice' %}",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          data:{
+              choice:choice,
+          },
+      });
+
+      if (response.status === "success") {
+          // Disable all radio buttons
+          $('input[type="radio"]').prop('disabled', true);
+          alert(response.message);
+      } else {
+          alert("Failed to save the choice.");
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while processing your request.");
+  }
+}
+
+// jQuery event listener for radio buttons
+$(document).ready(function () {
+    $('input[type="radio"]').on('change', function () {
+        const selectedChoice = $(this).val();
+        sendChoice(selectedChoice); // Call the async function
+    });
+});
+
+</script>
 
 
 

@@ -14,6 +14,10 @@ urlpatterns = [
 
     path('add_proposals/',views.add_proposals,name='add_proposals'),
     path('proposals/',views.proposals,name='proposals'),
+    path('vote-proposals/<int:id>/',views.vote_proposals,name='vote_proposals'),
+
+    path('update_choice/',views.update_choice,name='update_choice'),
+
 
     
 ]

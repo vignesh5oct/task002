@@ -1,0 +1,97 @@
+{% extends 'blog/base.html' %}
+{% block content %} 
+
+<style>
+img{
+    max-width:180px;
+}
+input[type=file]{
+    padding:10px;
+    background:#2d2d2d;
+}
+</style>
+
+<!-- <input type='file' onchange="readURL(this);" />
+<img id="blah" src="http://placehold.it/180" alt="your image" /> -->
+
+<section class="p-5">
+    <input type="file" class="file-input" onchange="checkAndPreview(event)">
+    <img id="preview1" src="#" alt="Preview 1" style="display: none; max-width: 200px;">
+    <br>
+
+    <input type="file" class="file-input" onchange="checkAndPreview(event)">
+    <img id="preview2" src="#" alt="Preview 2" style="display: none; max-width: 200px;">
+    <br>
+
+    <input type="file" class="file-input" onchange="checkAndPreview(event)">
+    <img id="preview3" src="#" alt="Preview 3" style="display: none; max-width: 200px;">
+    <br>
+
+    <div id="error-message" style="color: red;"></div>
+
+</section>
+<script>
+
+function checkAndPreview(event) {
+    const input = event.target;
+    const file = input.files[0];
+    const limit = {
+        weight: 700000, // 700KB
+        width: 1024,
+        height: 1024,
+    };
+
+    const errorElement = document.getElementById('error-message');
+    errorElement.textContent = ''; // Clear previous error messages
+
+    if (!file) return; // No file selected
+
+    // Check file size
+    if (file.size > limit.weight) {
+        errorElement.textContent = 'File size should be less than 700KB.';
+        input.value = null;
+        return;
+    }
+
+    // Check file type
+    if (!file.type.match('image.*')) {
+        errorElement.textContent = 'Please upload an image file only.';
+        input.value = null;
+        return;
+    }
+
+    const img = new Image();
+    const objectUrl = window.URL.createObjectURL(file);
+
+    img.onload = () => {
+        // Check image dimensions
+        if (img.width > limit.width || img.height > limit.height) {
+            errorElement.textContent = 'Image dimensions should not exceed 1024x1024 pixels.';
+            input.value = null;
+        } else {
+            errorElement.textContent = '';
+
+            // Preview the image
+            const previewId = `preview${[...document.querySelectorAll('.file-input')].indexOf(input) + 1}`;
+            const previewElement = document.getElementById(previewId);
+            previewElement.src = objectUrl;
+            previewElement.style.display = 'block';
+        }
+        window.URL.revokeObjectURL(objectUrl); // Clean up
+    };
+
+    img.onerror = () => {
+        errorElement.textContent = 'Unable to load the image. Please try again.';
+        input.value = null;
+        window.URL.revokeObjectURL(objectUrl); // Clean up
+    };
+
+    img.src = objectUrl;
+}
+
+
+
+
+</script>
+
+{% endblock content %} 
