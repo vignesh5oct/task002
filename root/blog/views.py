@@ -8,6 +8,9 @@ from .utils import generate_otp,verify_otp
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+from .forms import UserRegistrationForm
+from django.contrib import messages
+
 def home(request):
 
     return render(request,'blog/home.html')
@@ -24,6 +27,7 @@ def login_user(request):
             user = authenticate(request,username=username, password=password)
             if user is not None:
                 login(request,user)
+                messages.info(request,"log in.")
                 return redirect('dashboard')
         except Exception as e:
             print(e,"eroorroor")
@@ -38,6 +42,22 @@ def dashboard(request):
 
 
 def register(request):
+
+    if request.method == "POST":
+        registerForm = UserRegistrationForm(request.POST)
+
+        if registerForm.is_valid():
+
+            registerForm.save()
+            messages.info(request,"Your account has been created! You can now log in.")
+            return redirect("login_user")
+        else: #invalid case
+            print (registerForm.is_valid())  #form contains data and errors
+            # op=registerForm.errors
+
+            messages.info(request,"Email Already Exists")
+    # else:
+    #     registerForm = UserRegistrationForm()
 
     return render(request,'blog/register.html')
 

@@ -2,17 +2,35 @@
 {% block content %} 
 
 
-<form>
+<form method="post">
+    {%csrf_token%}
     <div class="col-md-6 mb-3">
         <label for="validationDefault01">Username</label>
-        <input type="text" class="form-control" id="validationDefault01">
+        <input name="username" type="text" class="form-control" id="validationDefault01">
     </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">Email</label>
+        <input name="email" type="email" class="form-control" id="validationDefault01">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">Password</label>
+        <input name="password1" type="password" class="form-control" id="validationDefault01">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="validationDefault01">C Password</label>
+        <input name="password2" type="password" class="form-control" id="validationDefault01">
+    </div>
+
+
     <!-- <div class="col-md-6 mb-3">
         <label for="validationDefault01">Email</label>
         <input type="text" class="form-control" id="validationDefault01">
     </div> -->
 
-    <div class="input-group is-invalid">
+    <!-- <div class="input-group is-invalid">
         <div class="custom-file">
             <label for="validationDefault01">Email</label>
             <input type="text" class="form-control" id="validationDefault01">
@@ -20,23 +38,23 @@
         <div class="input-group-append">
            <button id="generateOtp" class="btn btn-outline-secondary" type="button">Send OTP</button>
         </div>
-    </div>
+    </div> -->
     
     <div class="col-md-6 mb-3">
         <!-- <button id="generateOtp" type="button" class="btn btn-primary">Send OTP</button> -->
         <p id="timer"></p>
     </div>
 
-    <div class="col-md-6 mb-3">
+    <!-- <div class="col-md-6 mb-3">
         <label for="validationDefault01">OTP</label>
         <input id="verifiedOtp" type="number" class="form-control" id="validationDefault01">
         <p id="verifiedOtpMessage"></p>
 
-    </div>
+    </div> -->
 
-    <div class="col-md-6 mb-3">
+    <!-- <div class="col-md-6 mb-3">
         <button id="verifyOtp" type="button" class="btn btn-primary">Verify OTP</button>
-    </div>
+    </div> -->
       
     <button class="btn btn-primary" type="submit">Submit form</button>
 </form>
